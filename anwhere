@@ -1,0 +1,46 @@
+#!/bin/bash
+#./adduser.sh -a -- userlist
+set -- `getopt -q ad $@`
+flag=0
+while [ -n $1 ]; do
+case $1 in
+	-a|--add)
+		flag=add
+	;;
+	-d|--delete)
+		flag=del
+	;;
+	-h|--help)
+		echo "Descreption: this script is use to add or delete user from file"
+		echo -e "\t-a|--add\n\t\t add user"
+		echo -e "\t-d|--delete\n\t\t delete user"
+		echo -e "\t-h|--help\n\t\t  get the help page"
+		exit 0
+	;;
+	--)
+		shift
+		break
+	;;
+	*)
+		echo "error,use -h to get help"
+		exit 1 
+	;;
+esac
+	shift
+done
+list=`echo $1 | sed "s/'//g"`
+for user in `cat $list`; do
+	case $flag in 
+		add)
+			useradd $user
+			echo "user $user added"
+		;;
+		del)
+			userdel -r $user
+			echo "user $user deleted"
+		;;
+		*)
+			echo "error"		
+			exit 1
+	esac
+done
